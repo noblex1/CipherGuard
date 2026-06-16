@@ -22,7 +22,6 @@ import {
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/components/ThemeProvider";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
@@ -39,23 +38,13 @@ export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const cycleTheme = () => {
-    if (theme === "light") setTheme("dark");
-    else if (theme === "dark") setTheme("system");
-    else setTheme("light");
-  };
-
   const getThemeIcon = () => {
-    if (!mounted) return <Monitor className="h-4 w-4" />;
-    if (theme === "light") return <Sun className="h-4 w-4" />;
-    if (theme === "dark") return <Moon className="h-4 w-4" />;
-    return <Monitor className="h-4 w-4" />;
+    return <Sun className="h-4 w-4" />;
   };
 
   return (
@@ -116,23 +105,16 @@ export function Sidebar() {
 
       {/* Bottom Actions */}
       <div className="p-3 border-t-2 border-border space-y-1.5 bg-muted/20">
-        {/* Theme Toggle */}
-        <Button
-          variant="ghost"
-          onClick={cycleTheme}
+        {/* Light-only indicator */}
+        <div
           className={cn(
-            "w-full transition-all duration-200 hover:bg-accent hover:shadow-sm h-11 group",
+            "w-full transition-all duration-200 h-11 flex items-center",
             collapsed ? "justify-center px-2" : "justify-start px-4"
           )}
-          title={collapsed ? `Theme: ${mounted ? theme : "system"}` : undefined}
         >
-          <span className="transition-all duration-200 group-hover:scale-105">
-            {getThemeIcon()}
-          </span>
-          {!collapsed && (
-            <span className="ml-3 capitalize font-semibold text-sm">{mounted ? theme : "system"} Mode</span>
-          )}
-        </Button>
+          <span className="transition-all duration-200 group-hover:scale-105">{getThemeIcon()}</span>
+          {!collapsed && <span className="ml-3 capitalize font-semibold text-sm">Light Mode</span>}
+        </div>
 
         {/* Collapse Toggle */}
         <Button

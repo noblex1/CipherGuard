@@ -14,8 +14,7 @@ import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { useTheme } from "@/components/ThemeProvider";
-import { Moon, Sun, Monitor, BookOpen, FileText, UserCog } from "lucide-react";
+import { BookOpen, FileText, UserCog, Sun } from "lucide-react";
 
 const bottomNavItems = [
   { href: "/", label: "Home", icon: Home },
@@ -39,24 +38,12 @@ export function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const cycleTheme = () => {
-    if (theme === "light") setTheme("dark");
-    else if (theme === "dark") setTheme("system");
-    else setTheme("light");
-  };
-
-  const getThemeIcon = () => {
-    if (!mounted) return <Monitor className="h-5 w-5" />;
-    if (theme === "light") return <Sun className="h-5 w-5" />;
-    if (theme === "dark") return <Moon className="h-5 w-5" />;
-    return <Monitor className="h-5 w-5" />;
-  };
+  const getThemeIcon = () => <Sun className="h-5 w-5" />;
 
   return (
     <>
@@ -155,19 +142,13 @@ export function MobileNav() {
                   })}
                 </div>
 
-                {/* Theme Toggle */}
+                {/* Appearance (light-only) */}
                 <div className="space-y-2 pt-4 border-t border-border">
-                  <h3 className="text-sm font-semibold text-muted-foreground px-3 mb-3">
-                    Appearance
-                  </h3>
-                  <Button
-                    variant="ghost"
-                    onClick={cycleTheme}
-                    className="w-full justify-start text-base h-12"
-                  >
+                  <h3 className="text-sm font-semibold text-muted-foreground px-3 mb-3">Appearance</h3>
+                  <div className="w-full justify-start text-base h-12 flex items-center">
                     {getThemeIcon()}
-                    <span className="ml-3 capitalize">{mounted ? theme : "system"} Mode</span>
-                  </Button>
+                    <span className="ml-3 capitalize">Light Mode</span>
+                  </div>
                 </div>
               </div>
             </SheetContent>
