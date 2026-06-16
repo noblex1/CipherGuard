@@ -7,6 +7,7 @@ import { FileText, Download, FileSpreadsheet, AlertCircle, CheckCircle2, Clock }
 import { motion } from "framer-motion";
 import { useEffect, useState } from 'react';
 import { fetchAnalytics } from '@/lib/api';
+import { useToast } from '@/components/ui/toast';
 
 
 export default function ReportsPage() {
@@ -15,14 +16,55 @@ export default function ReportsPage() {
     fetchAnalytics().then((res) => setAnalytics(res)).catch((err) => console.error(err));
   }, []);
   const handleDownloadPDF = () => {
-    // Mock download
-    alert("PDF report would be generated in a real implementation");
+    if (!analytics) return;
+    const html = `
+      <html>
+        <head><title>Security Report</title></head>
+        <body>
+          <h1>Security Report</h1>
+          <p>Generated: ${new Date().toLocaleString()}</p>
+          <h2>Summary</h2>
+          <pre>${JSON.stringify(analytics.summary || {}, null, 2)}</pre>
+          <h2>Benchmark Results</h2>
+          <pre>${JSON.stringify(analytics.benchmarkResults || [], null, 2)}</pre>
+        </body>
+      </html>
+    `;
+    const w = window.open('', '_blank');
+    if (w) {
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      w.print();
+      w.close();
+      toast.showToast('Opened printable report (use Save as PDF in print dialog)', 'success');
+    }
   };
 
   const handleDownloadCSV = () => {
-    // Mock download
-    alert("CSV export would be generated in a real implementation");
+    if (!analytics) return;
+    const rows = analytics.benchmarkResults || [];
+    if (rows.length === 0) {
+      toast.showToast('No benchmark results to export', 'info');
+      return;
+    }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(',')]
+      .concat(
+        rows.map((r: any) => headers.map((h) => String(r[h] ?? '')).join(','))
+      )
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `benchmark-results-${new Date().toISOString()}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.showToast('CSV exported', 'success');
   };
+
+  const toast = useToast();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-orange-950 py-12">

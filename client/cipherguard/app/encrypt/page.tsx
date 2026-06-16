@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Lock, Copy, RotateCcw, Key, Shield, Info } from "lucide-react";
 import { motion } from "framer-motion";
+import { useToast } from "@/components/ui/toast";
 
 export default function EncryptPage() {
   const [plaintext, setPlaintext] = useState("");
@@ -19,10 +20,11 @@ export default function EncryptPage() {
   const [ciphertext, setCiphertext] = useState("");
   const [dynamicKeys, setDynamicKeys] = useState<string[]>([]);
   const [showResult, setShowResult] = useState(false);
+  const toast = useToast();
 
   const handleEncrypt = async () => {
     if (!plaintext || !keyword) return;
-
+    toast.showToast("Encrypting message...", "info");
     try {
       // Call the real backend API
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5000'}/api/encrypt`, {
@@ -47,9 +49,10 @@ export default function EncryptPage() {
       setCiphertext(data.ciphertext);
       setDynamicKeys(data.dynamicKeys || []);
       setShowResult(true);
+      toast.showToast("Encryption complete", "success");
     } catch (error) {
       console.error('Encryption error:', error);
-      alert('Encryption failed. Please make sure the server is running.');
+      toast.showToast("Encryption failed", "error");
     }
   };
 
@@ -63,6 +66,7 @@ export default function EncryptPage() {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(ciphertext);
+    toast.showToast("Ciphertext copied to clipboard", "success");
   };
 
   return (

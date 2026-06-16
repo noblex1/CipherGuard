@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Unlock, Copy, RotateCcw, Key, CheckCircle, Info, Shield } from "lucide-react";
 import { motion } from "framer-motion";
+import { useToast } from "@/components/ui/toast";
 
 export default function DecryptPage() {
   const [ciphertext, setCiphertext] = useState("");
@@ -18,10 +19,11 @@ export default function DecryptPage() {
   const [cipherType, setCipherType] = useState("enhanced");
   const [plaintext, setPlaintext] = useState("");
   const [showResult, setShowResult] = useState(false);
+  const toast = useToast();
 
   const handleDecrypt = async () => {
     if (!ciphertext || !keyword) return;
-
+    toast.showToast("Decrypting message...", "info");
     try {
       // Call the real backend API
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:5000'}/api/decrypt`, {
@@ -45,9 +47,10 @@ export default function DecryptPage() {
 
       setPlaintext(data.plaintext);
       setShowResult(true);
+      toast.showToast("Decryption complete", "success");
     } catch (error) {
       console.error('Decryption error:', error);
-      alert('Decryption failed. Please make sure you are using the correct keyword, rounds, and cipher type that was used for encryption.');
+      toast.showToast("Decryption failed", "error");
     }
   };
 
@@ -60,6 +63,7 @@ export default function DecryptPage() {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(plaintext);
+    toast.showToast("Plaintext copied to clipboard", "success");
   };
 
   return (

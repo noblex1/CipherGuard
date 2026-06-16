@@ -4,6 +4,7 @@ import "./globals.css";
 import { Sidebar } from "@/components/Sidebar";
 import { MobileNav } from "@/components/MobileNav";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { ToastProvider } from "@/components/ui/toast";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -24,7 +25,8 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-background antialiased">
         <ThemeProvider defaultTheme="system" storageKey="cipherguard-theme">
-          <div className="flex min-h-screen">
+          <ToastProvider>
+            <div className="flex min-h-screen">
             {/* Desktop Sidebar */}
             <Sidebar />
             
@@ -37,7 +39,8 @@ export default function RootLayout({
 
             {/* Mobile Bottom Navigation */}
             <MobileNav />
-          </div>
+            </div>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

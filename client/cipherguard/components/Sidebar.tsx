@@ -2,23 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  Shield, 
-  Lock, 
-  Unlock, 
-  Activity, 
-  LayoutDashboard,
-  BookOpen,
-  FileText,
-  UserCog,
-  Menu,
-  X,
-  Moon,
-  Sun,
-  Monitor,
-  ChevronLeft,
-  Home
-} from "lucide-react";
+import { Shield, Lock, Unlock, Activity, LayoutDashboard, BookOpen, FileText, UserCog, ChevronLeft, Home } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -43,9 +27,7 @@ export function Sidebar() {
     setMounted(true);
   }, []);
 
-  const getThemeIcon = () => {
-    return <Sun className="h-4 w-4" />;
-  };
+  // Theme indicators removed — app defaults to light mode
 
   return (
     <aside
@@ -105,17 +87,6 @@ export function Sidebar() {
 
       {/* Bottom Actions */}
       <div className="p-3 border-t-2 border-border space-y-1.5 bg-muted/20">
-        {/* Light-only indicator */}
-        <div
-          className={cn(
-            "w-full transition-all duration-200 h-11 flex items-center",
-            collapsed ? "justify-center px-2" : "justify-start px-4"
-          )}
-        >
-          <span className="transition-all duration-200 group-hover:scale-105">{getThemeIcon()}</span>
-          {!collapsed && <span className="ml-3 capitalize font-semibold text-sm">Light Mode</span>}
-        </div>
-
         {/* Collapse Toggle */}
         <Button
           variant="ghost"

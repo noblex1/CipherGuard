@@ -92,6 +92,22 @@ const COLORS = ["#3b82f6", "#06b6d4", "#8b5cf6", "#ec4899", "#f59e0b"];
 export default function DashboardPage() {
   const [analytics, setAnalytics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [chartHeight, setChartHeight] = useState<number>(300);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      setIsMobile(w < 768);
+      if (w < 420) setChartHeight(180);
+      else if (w < 640) setChartHeight(220);
+      else if (w < 1024) setChartHeight(300);
+      else setChartHeight(350);
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
 
   useEffect(() => {
     fetchAnalytics()
@@ -281,7 +297,7 @@ export default function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={chartHeight}>
                   <LineChart data={analytics?.securityScores || []}>
                     <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                     <XAxis dataKey="label" />
@@ -322,7 +338,7 @@ export default function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={chartHeight}>
                   <BarChart data={analytics?.attackTrends || []}>
                     <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                     <XAxis dataKey="month" />
@@ -361,7 +377,7 @@ export default function DashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={350}>
+                <ResponsiveContainer width="100%" height={Math.max(240, chartHeight)}>
                   <RadarChart data={radarData}>
                     <PolarGrid opacity={0.2} />
                     <PolarAngleAxis dataKey="subject" tick={{ fontSize: 12 }} />
@@ -414,16 +430,29 @@ export default function DashboardPage() {
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium">{item.metric}</span>
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg">
-                          <div className="text-xs text-muted-foreground mb-1">Classical</div>
-                          <div className="font-semibold">{item.classical}</div>
+                      {isMobile ? (
+                        <div className="space-y-2">
+                          <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg">
+                            <div className="text-xs text-muted-foreground mb-1">Classical</div>
+                            <div className="font-semibold">{item.classical}</div>
+                          </div>
+                          <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                            <div className="text-xs text-muted-foreground mb-1">Enhanced</div>
+                            <div className="font-semibold text-primary">{item.enhanced}</div>
+                          </div>
                         </div>
-                        <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                          <div className="text-xs text-muted-foreground mb-1">Enhanced</div>
-                          <div className="font-semibold text-primary">{item.enhanced}</div>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg">
+                            <div className="text-xs text-muted-foreground mb-1">Classical</div>
+                            <div className="font-semibold">{item.classical}</div>
+                          </div>
+                          <div className="p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                            <div className="text-xs text-muted-foreground mb-1">Enhanced</div>
+                            <div className="font-semibold text-primary">{item.enhanced}</div>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -438,7 +467,7 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.9 }}
         >
-          <Card className="glass-strong">
+            <Card className="glass-strong">
             <CardHeader>
               <CardTitle>Detailed Benchmark Results</CardTitle>
               <CardDescription>
@@ -449,62 +478,72 @@ export default function DashboardPage() {
               <div className="overflow-x-auto -mx-4 sm:mx-0">
                 <div className="inline-block min-w-full align-middle">
                   <div className="overflow-hidden">
-                    <table className="w-full min-w-[800px]">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left p-3 text-sm font-semibold">Cipher Type</th>
-                      <th className="text-left p-3 text-sm font-semibold">Key Space</th>
-                      <th className="text-left p-3 text-sm font-semibold">Avg Break Time</th>
-                      <th className="text-left p-3 text-sm font-semibold">Success Rate</th>
-                      <th className="text-left p-3 text-sm font-semibold">Chi-Square Dist.</th>
-                      <th className="text-left p-3 text-sm font-semibold">Security Score</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(analytics?.benchmarkResults || []).map((result: any, index: number) => (
-                      <tr
-                        key={result.id}
-                        className="border-b border-border/50 hover:bg-muted/50 transition-colors"
-                      >
-                        <td className="p-3">
-                          <div className="flex items-center gap-2">
-                            <Badge variant={index === 0 ? "destructive" : "default"}>
-                              {result.cipherType}
-                            </Badge>
-                          </div>
-                        </td>
-                        <td className="p-3 font-mono text-sm">
-                          {result.keySpace.toLocaleString()}
-                        </td>
-                        <td className="p-3 font-medium">{result.avgBreakTime}</td>
-                        <td className="p-3">
-                          <div className="flex items-center gap-2">
-                            {parseInt(result.successRate) === 100 ? (
-                              <AlertTriangle className="h-4 w-4 text-red-600" />
-                            ) : (
-                              <CheckCircle2 className="h-4 w-4 text-green-600" />
-                            )}
-                            <span>{result.successRate}</span>
-                          </div>
-                        </td>
-                        <td className="p-3 font-medium">{result.chiSquareDistance}</td>
-                        <td className="p-3">
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1 max-w-[100px]">
-                              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-gradient-to-r from-primary to-cyan-500"
-                                  style={{ width: `${result.securityScore * 10}%` }}
-                                />
+                    {isMobile ? (
+                      <div className="space-y-4">
+                        {(analytics?.benchmarkResults || []).map((result: any, index: number) => (
+                          <div key={result.id || index} className="p-4 border border-border rounded-lg bg-muted/5">
+                            <div className="flex items-center justify-between mb-2">
+                              <Badge variant={index === 0 ? "destructive" : "default"}>{result.cipherType}</Badge>
+                              <span className="text-xs text-muted-foreground">{result.keySpace.toLocaleString()}</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                              <div>
+                                <div className="text-xs text-muted-foreground">Avg Break Time</div>
+                                <div className="font-medium">{result.avgBreakTime}</div>
+                              </div>
+                              <div>
+                                <div className="text-xs text-muted-foreground">Success Rate</div>
+                                <div className="flex items-center gap-2">{parseInt(result.successRate) === 100 ? <AlertTriangle className="h-4 w-4 text-red-600" /> : <CheckCircle2 className="h-4 w-4 text-green-600" />}<span>{result.successRate}</span></div>
+                              </div>
+                              <div>
+                                <div className="text-xs text-muted-foreground">Chi-Square</div>
+                                <div className="font-medium">{result.chiSquareDistance}</div>
+                              </div>
+                              <div>
+                                <div className="text-xs text-muted-foreground">Security Score</div>
+                                <div className="flex items-center gap-2"><div className="flex-1 max-w-[100px]"><div className="h-2 bg-muted rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-primary to-cyan-500" style={{ width: `${result.securityScore * 10}%` }} /></div></div><span className="font-semibold">{result.securityScore}/10</span></div>
                               </div>
                             </div>
-                            <span className="font-semibold">{result.securityScore}/10</span>
                           </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                    </table>
+                        ))}
+                      </div>
+                    ) : (
+                      <table className="w-full min-w-full md:min-w-[800px]">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left p-3 text-sm font-semibold">Cipher Type</th>
+                            <th className="text-left p-3 text-sm font-semibold">Key Space</th>
+                            <th className="text-left p-3 text-sm font-semibold">Avg Break Time</th>
+                            <th className="text-left p-3 text-sm font-semibold">Success Rate</th>
+                            <th className="text-left p-3 text-sm font-semibold">Chi-Square Dist.</th>
+                            <th className="text-left p-3 text-sm font-semibold">Security Score</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(analytics?.benchmarkResults || []).map((result: any, index: number) => (
+                            <tr key={result.id} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
+                              <td className="p-3">
+                                <div className="flex items-center gap-2">
+                                  <Badge variant={index === 0 ? "destructive" : "default"}>{result.cipherType}</Badge>
+                                </div>
+                              </td>
+                              <td className="p-3 font-mono text-sm">{result.keySpace.toLocaleString()}</td>
+                              <td className="p-3 font-medium">{result.avgBreakTime}</td>
+                              <td className="p-3">
+                                <div className="flex items-center gap-2">{parseInt(result.successRate) === 100 ? <AlertTriangle className="h-4 w-4 text-red-600" /> : <CheckCircle2 className="h-4 w-4 text-green-600" />}<span>{result.successRate}</span></div>
+                              </td>
+                              <td className="p-3 font-medium">{result.chiSquareDistance}</td>
+                              <td className="p-3">
+                                <div className="flex items-center gap-2">
+                                  <div className="flex-1 max-w-[100px]"><div className="h-2 bg-muted rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-primary to-cyan-500" style={{ width: `${result.securityScore * 10}%` }} /></div></div>
+                                  <span className="font-semibold">{result.securityScore}/10</span>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
                   </div>
                 </div>
               </div>
