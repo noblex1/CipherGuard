@@ -31,23 +31,39 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
-      <form onSubmit={submit} className="w-full max-w-md p-8 bg-white/60 dark:bg-black/60 rounded-lg backdrop-blur-md shadow">
-        <h2 className="text-2xl font-bold mb-4">Admin Login</h2>
-        {error && <div className="text-sm text-destructive mb-2">{error}</div>}
-        <label className="block mb-2">
-          <span className="text-sm">Email</span>
-            <input className="mt-1 w-full p-2 border rounded" value={email} onChange={e => setEmail(e.target.value)} />
-        </label>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-white">
+      <form onSubmit={submit} className="w-full max-w-md p-8 glass-strong rounded-lg shadow-elegant">
+        <h2 className="text-3xl font-bold mb-6 gradient-text">Admin Login</h2>
+        {error && <div className="text-sm text-destructive bg-red-50 border border-red-200 rounded p-3 mb-4">{error}</div>}
         <label className="block mb-4">
-          <span className="text-sm">Password</span>
-          <input type="password" className="mt-1 w-full p-2 border rounded" value={password} onChange={e => setPassword(e.target.value)} />
+          <span className="text-sm font-medium text-foreground mb-2 block">Email</span>
+          <input 
+            type="email"
+            className="input-enhanced w-full p-3 rounded-md" 
+            value={email} 
+            onChange={e => setEmail(e.target.value)}
+            placeholder="admin@cipherguard.com"
+            required
+          />
         </label>
-        <div className="flex items-center justify-between">
-          <button className="px-4 py-2 bg-primary text-white rounded" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign in'}
-          </button>
-        </div>
+        <label className="block mb-6">
+          <span className="text-sm font-medium text-foreground mb-2 block">Password</span>
+          <input 
+            type="password" 
+            className="input-enhanced w-full p-3 rounded-md" 
+            value={password} 
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Enter your password"
+            required
+          />
+        </label>
+        <button 
+          type="submit"
+          className="w-full px-4 py-3 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90 transition-all btn-press disabled:opacity-50 disabled:cursor-not-allowed shadow-md" 
+          disabled={loading}
+        >
+          {loading ? 'Signing in...' : 'Sign In'}
+        </button>
       </form>
     </div>
   );

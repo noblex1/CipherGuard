@@ -53,12 +53,12 @@ export default function AdminPage() {
 
   if (!token) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-white">
         <div className="w-full max-w-md p-8">
-          <div className="p-6 bg-white/60 dark:bg-black/60 rounded shadow text-center">
-            <h2 className="text-2xl font-bold mb-2">Admin access required</h2>
-            <p className="mb-4">Please sign in to access the admin dashboard.</p>
-            <Link href="/admin/login" className="inline-block px-4 py-2 bg-primary text-white rounded">Sign in</Link>
+          <div className="p-8 glass-strong rounded-lg shadow-elegant text-center">
+            <h2 className="text-3xl font-bold mb-3 gradient-text">Admin Access Required</h2>
+            <p className="mb-6 text-muted-foreground">Please sign in to access the admin dashboard.</p>
+            <Link href="/admin/login" className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90 transition-all btn-press shadow-md">Sign In</Link>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@ export default function AdminPage() {
     router.push('/admin/login');
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-white py-12">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
         <motion.div
@@ -79,12 +79,12 @@ export default function AdminPage() {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <div className="inline-flex items-center space-x-2 bg-gray-600/10 border border-gray-600/20 rounded-full px-4 py-2 mb-4">
-            <Settings className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+          <div className="inline-flex items-center space-x-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-4">
+            <Settings className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-primary">
               Admin Dashboard
             </span>
-            <button onClick={handleLogout} className="ml-4 inline-flex items-center gap-2 text-sm text-red-600 hover:underline">
+            <button onClick={handleLogout} className="ml-4 inline-flex items-center gap-2 text-sm text-red-600 hover:text-red-700 hover:underline transition-colors">
               Logout
             </button>
           </div>
@@ -130,13 +130,13 @@ export default function AdminPage() {
             <Card className="glass-strong">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Unlock className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+                  <Unlock className="h-4 w-4 text-cyan-600" />
                   Total Decryptions
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="text-3xl font-bold text-cyan-600 dark:text-cyan-400">
+                  <div className="text-3xl font-bold text-cyan-600">
                     {(analytics?.dashboardStats?.totalDecryptions || 0).toLocaleString()}
                   </div>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -156,13 +156,13 @@ export default function AdminPage() {
             <Card className="glass-strong">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                  <Activity className="h-4 w-4 text-purple-600" />
                   Total Attacks
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                  <div className="text-3xl font-bold text-purple-600">
                     {(analytics?.dashboardStats?.totalAttacks || 0).toLocaleString()}
                   </div>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -182,13 +182,13 @@ export default function AdminPage() {
             <Card className="glass-strong">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <BarChart3 className="h-4 w-4 text-green-600" />
                   Total Benchmarks
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                  <div className="text-3xl font-bold text-green-600">
                     {analytics?.dashboardStats?.totalBenchmarks || 0}
                   </div>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -498,19 +498,19 @@ export default function AdminPage() {
                 </div>
                 <div className="text-center p-4 bg-muted/30 rounded-lg">
                   <p className="text-sm text-muted-foreground mb-2">Avg Decryption Time</p>
-                  <p className="text-2xl font-bold text-cyan-600 dark:text-cyan-400">
+                  <p className="text-2xl font-bold text-cyan-600">
                     {analytics?.dashboardStats?.avgDecryptionTime ?? '-'}
                   </p>
                 </div>
                 <div className="text-center p-4 bg-muted/30 rounded-lg">
                   <p className="text-sm text-muted-foreground mb-2">Avg Attack Time</p>
-                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                  <p className="text-2xl font-bold text-purple-600">
                     {analytics?.dashboardStats?.avgAttackTime ?? '-'}
                   </p>
                 </div>
                 <div className="text-center p-4 bg-muted/30 rounded-lg">
                   <p className="text-sm text-muted-foreground mb-2">Overall Success Rate</p>
-                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                  <p className="text-2xl font-bold text-green-600">
                     {analytics?.dashboardStats?.successRate ?? '-'}
                   </p>
                 </div>
